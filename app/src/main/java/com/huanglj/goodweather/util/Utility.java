@@ -3,10 +3,13 @@ package com.huanglj.goodweather.util;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.huanglj.goodweather.db.City;
 import com.huanglj.goodweather.db.County;
 import com.huanglj.goodweather.db.Province;
+import com.huanglj.goodweather.gson.Weather;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,5 +82,19 @@ public class Utility {
             }
         }
         return false;
+    }
+    @Nullable
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            //?为什么是传0进去而不是遍历
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
